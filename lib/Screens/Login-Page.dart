@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import 'package:shopobae/Screens/Home-Page.dart';
+import 'package:shopobae/Screens/Product-Page.dart';
 import 'package:shopobae/Screens/Signup-Page.dart';
 import 'package:shopobae/Widgets.dart';
 
@@ -16,13 +18,16 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.all(20),
           child: Column(
             children: [
-              DropDownList((String newvalue) {
-                setState(() {
-                  dropdownvalue = newValue!;
-                });
-              }),
               TextStyle1("Login Page", 30, Colors.black, FontWeight.bold,
                   TextAlign.center, FontStyle.normal),
+              Space(20),
+              DropDownList((
+                dynamic newValue,
+              ) {
+                setState(() {
+                  dropdownvalue = newValue;
+                });
+              }, context),
               Space(20),
               Textfield1(
                   "Email",
@@ -42,12 +47,19 @@ class _LoginPageState extends State<LoginPage> {
                   FontWeight.normal,
                   TextAlign.center,
                   FontStyle.normal,
-                  "asset/Key.png",
-                  () {},
-                  true),
+                  "asset/Key.png", () {
+
+              }, true),
               Space(20),
               Button1("Login", 18, Color(0xBFABABAB), FontWeight.normal,
-                  TextAlign.center, FontStyle.normal, () {}, context),
+                  TextAlign.center, FontStyle.normal, () {
+                if (dropdownvalue.toString() == "Consumer") {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
+                  } else if (dropdownvalue.toString() == "Seller") {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => ProductPage()));
+                  }}, context),
               Space(20),
               TextButton1(() {
                 Navigator.of(context).push(

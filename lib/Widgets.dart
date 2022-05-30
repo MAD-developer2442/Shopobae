@@ -1,36 +1,36 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-String dropdownvalue = 'Item 1';
+String dropdownvalue = '--Select--';
 
 // List of items in our dropdown menu
-var items = [
-  'Item 1',
-  'Item 2',
-  'Item 3',
-  'Item 4',
-  'Item 5',
-];
+var items = ["--Select--", "Seller", "Consumer"];
+final userdata = GetStorage();
 
-Widget DropDownList(ValueChanged changed) {
-  return DropdownButton(
-
-      // Initial Value
-      value: dropdownvalue,
-
-      // Down Arrow Icon
-      icon: const Icon(Icons.keyboard_arrow_down),
-
-      // Array list of items
-      items: items.map((String items) {
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      // After selecting the desired option,it will
-      // change button value to selected value
-      onChanged: changed);
+Widget DropDownList(ValueChanged changed, BuildContext context) {
+  return Container(
+    alignment: Alignment.center,
+    width: MediaQuery.of(context).size.width,
+    decoration: BoxDecoration(
+        color: const Color(0xBFABABAB),
+        border: Border.all(color: Colors.black, width: 1.0),
+        borderRadius: const BorderRadius.all(Radius.circular(5.0))),
+    child: DropdownButton(
+      elevation: 10,
+        value: dropdownvalue,
+        icon: const Icon(Icons.keyboard_arrow_down),
+        items: items.map((String items) {
+          return DropdownMenuItem(
+            value: items,
+            child: TextStyle1(items, 18, Colors.black, FontWeight.w500,
+                TextAlign.center, FontStyle.normal),
+          );
+        }).toList(),
+        onChanged: changed),
+  );
 }
 
 Widget TextStyle1(String text, double fontSize, Color color,

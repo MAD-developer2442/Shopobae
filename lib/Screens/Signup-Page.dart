@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
+import 'package:shopobae/Screens/Home-Page.dart';
 import 'package:shopobae/Screens/Login-Page.dart';
+import 'package:shopobae/Screens/Product-Page.dart';
 import 'package:shopobae/Widgets.dart';
 
 class SignupPage extends StatefulWidget {
@@ -18,6 +20,12 @@ class _SignupPageState extends State<SignupPage> {
             children: [
               TextStyle1("Signup Page", 30, Colors.black, FontWeight.bold,
                   TextAlign.center, FontStyle.normal),
+              Space(20),
+              DropDownList((dynamic newValue) {
+                setState(() {
+                  dropdownvalue = newValue!;
+                });
+              }, context),
               Space(20),
               Textfield1(
                   "Email",
@@ -38,20 +46,25 @@ class _SignupPageState extends State<SignupPage> {
                   TextAlign.center,
                   FontStyle.normal,
                   "asset/Key.png",
-                      () {},
+                  () {},
                   true),
               Space(20),
               Button1("Sign Up", 18, Color(0xBFABABAB), FontWeight.normal,
-                  TextAlign.center, FontStyle.normal, () {}, context),
+                  TextAlign.center, FontStyle.normal, () {
+                if (dropdownvalue == "Consumer") {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
+                } else if (dropdownvalue == "Seller") {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProductPage()));
+                }
+              }, context),
               Space(20),
-              TextButton1(
-                      () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LoginPage()));},
-                  "Already have an account?Login",
-                  18,
-                  Color(0xBFABABAB),
-                  FontWeight.normal,
-                  TextAlign.center,
-                  FontStyle.normal)
+              TextButton1(() {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => LoginPage()));
+              }, "Already have an account?Login", 18, Color(0xBFABABAB),
+                  FontWeight.normal, TextAlign.center, FontStyle.normal)
             ],
           ),
         ),
