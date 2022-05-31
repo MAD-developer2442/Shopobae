@@ -8,6 +8,7 @@ String dropdownvalue = '--Select--';
 
 // List of items in our dropdown menu
 var items = ["--Select--", "Seller", "Consumer"];
+
 final userdata = GetStorage();
 
 Widget DropDownList(ValueChanged changed, BuildContext context) {

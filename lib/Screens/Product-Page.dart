@@ -15,6 +15,7 @@ late String codeDialog;
 late String valueText;
 
 List<Widget> _cardList = [];
+final scaffoldState = GlobalKey<ScaffoldState>();
 
 class ProductPage extends StatefulWidget {
   @override
@@ -25,116 +26,101 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xFFFFC107),
-        child: FittedBox(
-          alignment: Alignment.center,
-          child: TextStyle1(
-            "Add\nProduct",
-            10,
-            Colors.black,
-            FontWeight.bold,
-            TextAlign.center,
-            FontStyle.normal,
-          ),
-        ),
-        onPressed: () {
-          showBottomSheet(context: , builder: builder)
-          // AddCard(context);
-        },
-      ),
+      key: scaffoldState,
       appBar: AppBar(
-        title: Text('Product Page'),
+        title: const Text('Product Page'),
       ),
-      body: Center(
-        child: Column(
-          children: [CardListView()],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CardListView(),
+              Positioned(
+                  child: GestureDetector(
+                onTap: () {
+                  _showSheet();
+                },
+                child: const CircleAvatar(child: Icon(Icons.add)),
+              ))
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Future<void> AddCard(BuildContext context) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: AddTripDialogue(),
-          );
-        });
+  void _showSheet() {
+    scaffoldState.currentState?.showBottomSheet((context) => Container(
+          color: Colors.transparent,
+          child: AddProductDialogue(),
+        ));
   }
 
-  Widget AddTripDialogue() {
-    return AlertDialog(
-      title: TextStyle1('Product Details', 20, Colors.black, FontWeight.bold,
-          TextAlign.center, FontStyle.normal),
-      content: DropdownButton(
-          elevation: 10,
-          value: dropdownvalueproduct,
-          icon: const Icon(Icons.keyboard_arrow_down),
-          items: Category.map((dynamic Category) {
-            return DropdownMenuItem(
-              value: Category,
-              child: TextStyle1(Category, 18, Colors.black, FontWeight.w500,
-                  TextAlign.center, FontStyle.normal),
-            );
-          }).toList(),
-          onChanged: (dynamic newValue) {
-            setState(() {
-              dropdownvalueproduct = newValue!;
-            });
-          }),
-      actions: <Widget>[
-        Column(
-          children: [
-            Container(
-                margin: const EdgeInsets.all(10),
-                child: TextStyle1("Details", 20, Colors.black, FontWeight.bold,
-                    TextAlign.center, FontStyle.normal)),
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: TextField(
-                keyboardType: TextInputType.name,
-                onChanged: (value) {
-                  setState(() {
-                    valueText = value;
-                  });
-                },
-                controller: NameController,
-                decoration: const InputDecoration(hintText: "Name"),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: TextField(
-                keyboardType: TextInputType.name,
-                onChanged: (value) {
-                  setState(() {
-                    valueText = value;
-                  });
-                },
-                controller: BrandController,
-                decoration: const InputDecoration(hintText: "Brand"),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  setState(() {
-                    valueText = value;
-                  });
-                },
-                controller: PriceController,
-                decoration: const InputDecoration(hintText: "Price"),
-              ),
-            )
-          ],
+  Widget AddProductDialogue() {
+    return Column(
+      children: [
+        TextStyle1('Product Details', 20, Colors.black, FontWeight.bold,
+            TextAlign.center, FontStyle.normal),
+        DropdownButton(
+            elevation: 10,
+            value: dropdownvalueproduct,
+            icon: const Icon(Icons.keyboard_arrow_down),
+            items: Category.map((dynamic Category) {
+              return DropdownMenuItem(
+                value: Category,
+                child: TextStyle1(Category, 18, Colors.black, FontWeight.w500,
+                    TextAlign.center, FontStyle.normal),
+              );
+            }).toList(),
+            onChanged: (dynamic newProductValue) {
+              setState(() {
+                dropdownvalueproduct = newProductValue!;
+              });
+            }),
+        Container(
+          margin: const EdgeInsets.all(10),
+          child: TextField(
+            keyboardType: TextInputType.name,
+            onChanged: (value) {
+              setState(() {
+                valueText = value;
+              });
+            },
+            controller: NameController,
+            decoration: const InputDecoration(hintText: "Name"),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.all(10),
+          child: TextField(
+            keyboardType: TextInputType.name,
+            onChanged: (value) {
+              setState(() {
+                valueText = value;
+              });
+            },
+            controller: BrandController,
+            decoration: const InputDecoration(hintText: "Brand"),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.all(10),
+          child: TextField(
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              setState(() {
+                valueText = value;
+              });
+            },
+            controller: PriceController,
+            decoration: const InputDecoration(hintText: "Price"),
+          ),
         ),
         ElevatedButton(
-          child: Text('Save'),
+          child: TextStyle1('Save', 20, Colors.black, FontWeight.bold,
+              TextAlign.center, FontStyle.normal),
           onPressed: () {
             setState(
               () {
@@ -149,8 +135,23 @@ class _ProductPageState extends State<ProductPage> {
                 userdata.write('Price', Price);
 
                 codeDialog = valueText;
-                _cardList.add(_card());
-                Navigator.pop(context);
+                if (Name == "" || Price == "" || Brand == "") {
+                  final snackBar = SnackBar(
+                    content: const Text('Please enter all the product details!'),
+                    action: SnackBarAction(
+                      label: 'Undo',
+                      onPressed: () {
+                        // Some code to undo the change.
+                      },
+                    ),
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                } else {
+                  _cardList.add(_card());
+                  Navigator.pop(context);
+                }
+                ;
               },
             );
           },
